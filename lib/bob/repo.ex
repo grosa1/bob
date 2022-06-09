@@ -10,8 +10,10 @@ defmodule Bob.Repo do
   end
 
   def fetch_file(path) do
-    %{body: body} = ExAws.S3.get_object(@bucket, path, []) |> ExAws.request!()
-    body
+    case ExAws.request(ExAws.S3.get_object(@bucket, path, [])) do
+      {:ok, %{body: body}} -> body
+      {:error, {:http_error, 404, _result}} -> ""
+    end
   end
 
   def list_files(prefix) do
