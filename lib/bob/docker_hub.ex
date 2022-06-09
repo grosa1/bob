@@ -60,8 +60,12 @@ defmodule Bob.DockerHub do
       nil
     else
       # DockerHub returns dupes sometimes?
-      archs = Enum.uniq(Enum.map(result["images"], & &1["architecture"]))
-      {result["name"], archs}
+      archs =
+        images
+        |> Enum.map(&:binary.copy(&1["architecture"]))
+        |> Enum.uniq()
+
+      {:binary.copy(result["name"]), archs}
     end
   end
 

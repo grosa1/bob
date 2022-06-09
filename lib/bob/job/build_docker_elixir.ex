@@ -21,5 +21,5 @@ defmodule Bob.Job.BuildDockerElixir do
   end
 
   def priority(), do: 4
-  def weight(), do: 1
+  def weight(), do: 2
 end

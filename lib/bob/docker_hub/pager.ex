@@ -1,7 +1,7 @@
 defmodule Bob.DockerHub.Pager do
   use GenServer
 
-  @concurrency 10
+  @concurrency 5
   @timeout 15 * 60_000
 
   def start_link(url) do

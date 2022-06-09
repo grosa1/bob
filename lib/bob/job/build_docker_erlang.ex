@@ -15,5 +15,5 @@ defmodule Bob.Job.BuildDockerErlang do
   end
 
   def priority(), do: 5
-  def weight(), do: 4
+  def weight(), do: 6
 end

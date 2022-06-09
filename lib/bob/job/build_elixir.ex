@@ -53,5 +53,5 @@ defmodule Bob.Job.BuildElixir do
   defp ref_to_version(_not_a_version), do: "main"
 
   def priority(), do: 2
-  def weight(), do: 3
+  def weight(), do: 4
 end

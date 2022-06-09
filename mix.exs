@@ -25,6 +25,7 @@ defmodule Bob.Mixfile do
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.11"},
       {:jason, "~> 1.1"},
+      {:observer_cli, "~> 1.7"},
       {:plug_cowboy, "~> 2.0"},
       {:porcelain, "~> 2.0"},
       {:rollbax, "~> 0.11.0"},
