@@ -1,4 +1,23 @@
 steps:
+- name: gcr.io/cloud-builders/docker
+  args:
+    - run
+    - '--privileged'
+    - 'linuxkit/binfmt:v0.8'
+  id: initialize-qemu
+- name: gcr.io/cloud-builders/docker
+  args:
+    - buildx
+    - create
+    - '--name'
+    - buildxbuilder
+  id: create-builder
+- name: gcr.io/cloud-builders/docker
+  args:
+    - buildx
+    - use
+    - buildxbuilder
+  id: select-builder
 - name: 'gcr.io/cloud-builders/docker'
   args: ['pull', 'gcr.io/$PROJECT_ID/bob-build:latest']
   id: pull-build
@@ -9,7 +28,10 @@ steps:
   waitFor: ['-']
 - name: 'gcr.io/cloud-builders/docker'
   args:
+  - 'buildx'
   - 'build'
+  - '--platform'
+  - 'linux/amd64,linux/arm64'
   - '-t'
   - 'gcr.io/$PROJECT_ID/bob-build:latest'
   - '-t'
@@ -20,10 +42,13 @@ steps:
   - 'build'
   - '.'
   id: build-build
-  waitFor: ['pull-build']
+  waitFor: ['pull-build', 'select-builder']
 - name: 'gcr.io/cloud-builders/docker'
   args:
+  - 'buildx'
   - 'build'
+  - '--platform'
+  - 'linux/amd64,linux/arm64'
   - '-t'
   - 'gcr.io/$PROJECT_ID/bob:latest'
   - '-t'
@@ -36,7 +61,7 @@ steps:
   - 'app'
   - '.'
   id: build-app
-  waitFor: ['build-build', 'pull-app']
+  waitFor: ['build-build', 'pull-app', 'select-builder']
 
 images:
 - 'gcr.io/$PROJECT_ID/bob-build:latest'
@@ -45,5 +70,7 @@ images:
 - 'gcr.io/$PROJECT_ID/bob:$SHORT_SHA'
 
 options:
+  env:
+    - DOCKER_CLI_EXPERIMENTAL=enabled
   machineType: 'N1_HIGHCPU_8'
 
